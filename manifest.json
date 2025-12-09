@@ -1,0 +1,52 @@
+{
+    "manifest_version": 3,
+    "name": "GIF Player Controller",
+    "name__zh_CN": "GIF 播放控制器",
+    "version": "1.2.0",
+    "description": "Smart GIF playback control with pause, progress scrubbing, and auto-load management",
+    "description__zh_CN": "在 GIF 图片下方显示播放控制按钮,支持暂停和进度拖动",
+    "icons": {
+        "16": "icons/icon-16.png",
+        "32": "icons/icon-32.png",
+        "48": "icons/icon-48.png",
+        "128": "icons/icon-128.png"
+    },
+    "permissions": [
+        "activeTab",
+        "storage"
+    ],
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "icons/icon-16.png",
+            "32": "icons/icon-32.png",
+            "48": "icons/icon-48.png",
+            "128": "icons/icon-128.png"
+        },
+        "default_title": "GIF Player Controller Settings"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>",
+                "http://*/*",
+                "https://*/*"
+            ],
+            "js": [
+                "gifuct-js.js",
+                "content.js"
+            ],
+            "css": [
+                "style.css"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        }
+    ]
+}

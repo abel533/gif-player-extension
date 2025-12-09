@@ -1,0 +1,236 @@
+.gif-player-wrapper {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    line-height: 0;
+}
+
+.gif-display-canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.gif-control-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    padding: 6px 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 1000;
+    border-radius: 0 0 4px 4px;
+    box-sizing: border-box;
+    
+    /* 默认隐藏，悬停显示 */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.gif-control-bar.has-resize-handle {
+    padding-right: 32px;
+}
+
+/* 鼠标悬停在包装器上时显示控制条 */
+.gif-player-wrapper:hover .gif-control-bar {
+    opacity: 1;
+    visibility: visible;
+}
+
+.gif-play-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.gif-progress {
+    flex: 1;
+    min-width: 40px;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+}
+
+.gif-progress::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.gif-progress::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+/* 速度控制按钮 */
+.gif-speed-btn {
+    width: 14px;
+    height: 14px;
+    min-width: 14px;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    flex-shrink: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.gif-speed-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.gif-speed-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* 速度显示 */
+.gif-speed-display {
+    color: white;
+    font-size: 11px;
+    font-family: monospace;
+    min-width: 22px;
+    text-align: center;
+    flex-shrink: 0;
+    margin: 0;
+    white-space: nowrap;
+}
+
+/* 帧信息 */
+.gif-frame-info {
+    color: white;
+    font-size: 11px;
+    font-family: monospace;
+    min-width: 45px;
+    text-align: right;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.gif-open-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    margin-left: 2px;
+    flex-shrink: 0;
+}
+
+.gif-open-btn:hover {
+    opacity: 1;
+}
+
+.gif-resize-handle {
+    position: absolute;
+    right: 8px;
+    bottom: 6px;
+    width: 16px;
+    height: 16px;
+    cursor: nwse-resize;
+    border: none;
+    background: transparent;
+}
+
+.gif-resize-handle::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-right: 2px solid rgba(255, 255, 255, 0.6);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+    pointer-events: none;
+}
+
+.gif-resize-handle:active {
+    background: rgba(255, 255, 255, 0.28);
+}
+
+.gif-overlay-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1001;
+    transition: all 0.2s;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.gif-overlay-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.gif-overlay-btn svg {
+    width: 30px;
+    height: 30px;
+    fill: white;
+    margin-left: 4px;
+}
+
+.gif-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    pointer-events: none;
+    z-index: 1002;
+}
+
+/* 手动模式 - 保持原始图片可见 */
+.gif-player-wrapper.gif-manual-mode img {
+    display: block !important;
+}
+
+/* 已加载状态 - 隐藏 overlay 按钮 */
+.gif-player-wrapper.loaded .gif-overlay-btn {
+    display: none !important;
+}

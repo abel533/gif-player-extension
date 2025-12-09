@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="title">GIF Player Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 320px;
+            padding: 16px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+            color: #2d3748;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .header-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .header-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .section {
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #718096;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .domain-display {
+            font-size: 12px;
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 6px 10px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            word-break: break-all;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .setting-label {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .setting-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: #2d3748;
+        }
+
+        .setting-desc {
+            font-size: 10px;
+            color: #718096;
+        }
+
+        /* Toggle Switch */
+        .toggle {
+            position: relative;
+            width: 40px;
+            height: 22px;
+            flex-shrink: 0;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #cbd5e0;
+            transition: 0.3s;
+            border-radius: 22px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        .toggle input:checked+.toggle-slider {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .toggle input:checked+.toggle-slider:before {
+            transform: translateX(18px);
+        }
+
+        /* Number Input */
+        .number-input {
+            width: 60px;
+            padding: 4px 8px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            background: white;
+            color: #2d3748;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .number-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* Input Row */
+        .input-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .input-label {
+            font-size: 11px;
+            color: #718096;
+        }
+
+        /* Config Management */
+        .config-area {
+            margin-top: 12px;
+        }
+
+        .config-textarea {
+            width: 100%;
+            height: 60px;
+            padding: 8px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            background: white;
+            color: #2d3748;
+            font-size: 11px;
+            font-family: monospace;
+            resize: none;
+            margin-bottom: 8px;
+        }
+
+        .config-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-export {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+        }
+
+        .btn-export:hover {
+            background: rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-import {
+            background: rgba(118, 75, 162, 0.2);
+            color: #a855f7;
+        }
+
+        .btn-import:hover {
+            background: rgba(118, 75, 162, 0.3);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 16px;
+            background: #22c55e;
+            color: white;
+            border-radius: 6px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-icon">🎬</div>
+        <div class="header-title" data-i18n="header_title">GIF Player</div>
+    </div>
+
+    <!-- 当前页面控制 -->
+    <div class="section">
+        <div class="section-title" data-i18n="section_current_page">Current Page</div>
+        <div class="domain-display" id="currentDomain" data-i18n="loading">Loading...</div>
+
+        <div class="setting-item">
+            <div class="setting-label">
+                <span class="setting-name" data-i18n="temp_disable_name">Temporarily Disable This Page</span>
+                <span class="setting-desc" data-i18n="temp_disable_desc">Restored after refresh</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="tempDisableToggle">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-item">
+            <div class="setting-label">
+                <span class="setting-name" data-i18n="domain_disable_name">Disable This Domain</span>
+                <span class="setting-desc" data-i18n="domain_disable_desc">Permanently disable this website</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="domainDisableToggle">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <!-- 全局配置 -->
+    <div class="section">
+        <div class="section-title" data-i18n="section_global_config">Global Configuration</div>
+
+        <div class="setting-item">
+            <div class="setting-label">
+                <span class="setting-name" data-i18n="min_size_name">Minimum Size Threshold</span>
+                <span class="setting-desc" data-i18n="min_size_desc">Ignore GIFs smaller than this</span>
+            </div>
+            <div class="input-row">
+                <div class="input-group">
+                    <span class="input-label" data-i18n="width">W</span>
+                    <input type="number" class="number-input" id="minWidth" min="0" max="1000" value="200">
+                </div>
+                <div class="input-group">
+                    <span class="input-label" data-i18n="height">H</span>
+                    <input type="number" class="number-input" id="minHeight" min="0" max="1000" value="100">
+                </div>
+            </div>
+        </div>
+
+        <div class="setting-item">
+            <div class="setting-label">
+                <span class="setting-name" data-i18n="auto_load_limit_name">Auto Load Limit</span>
+                <span class="setting-desc" data-i18n="auto_load_limit_desc">Require manual click if exceeded</span>
+            </div>
+            <input type="number" class="number-input" id="maxAutoLoadCount" min="1" max="100" value="4">
+        </div>
+
+        <div class="setting-item">
+            <div class="setting-label">
+                <span class="setting-name" data-i18n="auto_play_name">Auto Play</span>
+                <span class="setting-desc" data-i18n="auto_play_desc">Start playing after loading</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="autoPlayToggle" checked>
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-item">
+            <div class="setting-label">
+                <span class="setting-name" data-i18n="auto_load_name">Auto Load</span>
+                <span class="setting-desc" data-i18n="auto_load_desc">Click GIF to load manually when off</span>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="autoLoadToggle" checked>
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <!-- 配置管理 -->
+    <div class="section">
+        <div class="section-title" data-i18n="section_config_mgmt">Configuration Management</div>
+        <div class="config-area">
+            <textarea class="config-textarea" id="configTextarea" data-i18n-placeholder="config_placeholder"></textarea>
+            <div class="btn-row">
+                <button class="btn btn-export" id="exportBtn" data-i18n="export_config">Export Config</button>
+                <button class="btn btn-import" id="importBtn" data-i18n="import_config">Import Config</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>
